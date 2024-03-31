@@ -34,7 +34,7 @@ options {
         stage('Run container'){
             steps{
                 bat '''
-                        docker run --name mle-template -p 80:5556 -d altairzero/mle-template:latest
+                        docker run --name mle-template -p 80:5556 -d papajool/mle-template:latest
                 '''
             }
         }
