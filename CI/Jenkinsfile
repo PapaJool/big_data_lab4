@@ -2,7 +2,6 @@ pipeline {
     agent any
     
     environment {
-        DH_CREDS_PSW = credentials('DH_PASS_0')
     }
 
     stages {
@@ -10,7 +9,7 @@ pipeline {
             steps {
                 echo 'Cloning repo'
                 bat 'rd /s /q my-mle-template 2>null'
-                bat 'git clone https://github.com/Better-than-Elon/my-mle-template.git'
+                bat 'git clone https://github.com/PapaJool/mle-template.git'
                 bat 'cd my-mle-template'
             }
         }
