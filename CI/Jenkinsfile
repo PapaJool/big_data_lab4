@@ -12,32 +12,32 @@ pipeline {
         stage('Cloning repo') {
             steps {
                 echo 'Cloning repo'
-                bat 'rd /s /q my-mle-template 2>null'
-                bat 'git clone https://github.com/PapaJool/mle-template.git'
-                bat 'cd my-mle-template'
+                sh 'rd /s /q my-mle-template 2>null'
+                sh 'git clone https://github.com/PapaJool/mle-template.git'
+                sh 'cd my-mle-template'
             }
         }
         
         stage('Building docker') {
             steps {
                 dir("my-mle-template") {
-                    bat 'docker login -u papajool -p %DH_CREDS_PSW% docker.io'
-                    bat 'docker-compose build'
+                    sh 'docker login -u papajool -p %DH_CREDS_PSW% docker.io'
+                    sh 'docker-compose build'
                 }
             }
         }
         stage('Run docker') {
             steps {
                 dir("my-mle-template") {
-                    bat 'docker-compose up'
-                    bat 'docker-compose logs -t --tail 10'
+                    sh 'docker-compose up'
+                    sh 'docker-compose logs -t --tail 10'
                 }
             }
         }
         stage('Push to DockerHub') {
             steps {
                 dir("my-mle-template") {
-                    bat 'docker push papajool/mle-template:latest'
+                    sh 'docker push papajool/mle-template:latest'
                 }
             }
         }
@@ -45,8 +45,8 @@ pipeline {
     post {
         always {
             dir("my-mle-template") {
-                bat 'docker-compose down 2>null'
-                bat 'docker logout'
+                sh 'docker-compose down 2>null'
+                sh 'docker logout'
             }
         }
     }
