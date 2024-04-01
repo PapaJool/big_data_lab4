@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    
+
     environment {
         DOCKERHUB_CREDS=credentials('mle-template')
         LC_ALL = "en_US.UTF-8"
@@ -8,46 +8,93 @@ pipeline {
         LANGUAGE = "en_US.UTF-8"
     }
 
+options {
+        timestamps()
+        skipDefaultCheckout(true)
+	}
     stages {
-        stage('Cloning repo') {
+        stage('Clone github repository') {
             steps {
-                echo 'Cloning repo'
-                sh 'rd /s /q my-mle-template 2>null'
-                sh 'git clone https://github.com/PapaJool/mle-template.git'
-                sh 'cd my-mle-template'
+                cleanWs()
+                sh 'git clone -b main https://github.com/PapaJool/mle-template'
+				}
+			}
+
+        stage('Checkout repo dir') {
+            steps {
+                sh 'cd mle-template && dir'
+				}
+			}
+
+        stage('Login'){
+            steps{
+                //withCredentials([usernamePassword(credentialsId: 'mle-template', passwordVariable: 'DOCKER_REGISTRY_PWD', usernameVariable: 'DOCKER_REGISTRY_USER')]){
+                //sh 'echo $DOCKER_REGISTRY_PWD | docker login -u $DOCKER_REGISTRY_USER --password-stdin'}
+                //sh 'echo $DOCKERHUB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USR --password-stdin'
+                sh 'docker login -u $DOCKERHUB_CREDS_USR -p $DOCKERHUB_CREDS_PSW'
+                }
             }
-        }
-        
-        stage('Building docker') {
+
+        stage('Create and run docker container') {
             steps {
-                dir("my-mle-template") {
-                    sh 'docker login -u papajool -p %DH_CREDS_PSW% docker.io'
-                    sh 'docker-compose build'
+                script {
+                    try {
+                        sh 'cd mle-template && docker-compose build'
+                        }
+
+                    finally {
+                    sh '''
+                        cd mle-template
+                        docker-compose up -d
+                        '''
+                        }
+				    }
+                }
+            }
+
+        // use for multi containers:
+        //docker exec %containerId% cd app && coverage run src/unit_tests/test_preprocess.py && coverage run -a src/unit_tests/test_training.py && coverage report -m
+        //use for single container (with auth):
+        //docker run --name mle-template_web_1 cd app && coverage run src/unit_tests/test_preprocess.py && coverage run -a src/unit_tests/test_training.py && coverage report -m
+
+        /* stage('Checkout container logs') {
+            steps {
+                dir("mle-template") {
+                        sh '''
+                            docker-compose up -d
+                            for /f %%i in ('docker ps -qf "name=^mle-template-web-1"') do set containerId=%%i
+                            echo %containerId%
+                            IF "%containerId%" == "" (
+                                echo "No container running"
+                            )
+                            ELSE (
+                                docker logs --tail 1000 -f %containerId%
+                                )
+                        '''
+                    }
+            }
+        } */
+
+        stage('Checkout coverage report'){
+            steps{
+                dir("mle-template"){
+                    sh '''
+                    docker-compose logs -t --tail 10
+                    '''
                 }
             }
         }
-        stage('Run docker') {
-            steps {
-                dir("my-mle-template") {
-                    sh 'docker-compose up'
-                    sh 'docker-compose logs -t --tail 10'
-                }
+
+        stage('Push'){
+            steps{
+                sh 'docker push papajool/mle-template:latest'
             }
         }
-        stage('Push to DockerHub') {
-            steps {
-                dir("my-mle-template") {
-                    sh 'docker push papajool/mle-template:latest'
-                }
-            }
-        }
-    }
+	}
+
     post {
         always {
-            dir("my-mle-template") {
-                sh 'docker-compose down 2>null'
-                sh 'docker logout'
-            }
+            sh 'docker logout'
         }
     }
 }
