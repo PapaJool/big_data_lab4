@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "my-mle-template"
+name = "mle-template"
 version = "0.1.0"
 description = ""
-authors = ["Better-than-Elon <arkadyartemenko@gmail.com>"]
+authors = ["PapaJool <shakirowkamil2001@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
