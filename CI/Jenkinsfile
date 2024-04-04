@@ -39,13 +39,13 @@ options {
             steps {
                 script {
                     try {
-                        sh 'cd mle-template && docker-compose build'
+                        sh 'cd mle-template && docker compose build'
                         }
 
                     finally {
                     sh '''
                         cd mle-template
-                        docker-compose up -d
+                        docker compose up -d
                         '''
                         }
 				    }
@@ -79,7 +79,7 @@ options {
             steps{
                 dir("mle-template"){
                     sh '''
-                    docker-compose logs -t --tail 10
+                    docker compose logs -t --tail 10
                     '''
                 }
             }
