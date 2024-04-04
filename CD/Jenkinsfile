@@ -5,21 +5,21 @@ pipeline {
         stage('Pull image') {
             steps {
                 echo 'Updating docker image'
-                bat 'docker pull papajool/mle-template:latest'
+                sh 'docker pull papajool/mle-template:latest'
             }
         }
         
         stage('Run container') {
             steps {
-                bat 'curl https://raw.githubusercontent.com/PapaJool/mle-template/main/docker-compose.yml -o docker-compose.yml'
-                bat 'dir'
-                bat 'docker-compose up'
+                sh 'curl https://raw.githubusercontent.com/PapaJool/mle-template/main/docker-compose.yml -o docker-compose.yml'
+                sh 'dir'
+                sh 'docker-compose up'
             }
         }
     }
     post {
         always {
-            bat 'docker-compose down'
+            sh 'docker-compose down'
         }
     }
 }
