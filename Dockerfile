@@ -1,6 +1,5 @@
-FROM python:3.9-slim
-USER root
-RUN apt-get install gcc python3-dev
+FROM python:3.11.9-alpine3.19
+
 ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
