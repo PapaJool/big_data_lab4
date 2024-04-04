@@ -13,13 +13,13 @@ pipeline {
             steps {
                 sh 'curl https://raw.githubusercontent.com/PapaJool/mle-template/main/docker-compose.yml -o docker-compose.yml'
                 sh 'dir'
-                sh 'docker-compose up'
+                sh 'docker compose up'
             }
         }
     }
     post {
         always {
-            sh 'docker-compose down'
+            sh 'docker compose down'
         }
     }
 }
