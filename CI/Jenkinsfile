@@ -90,10 +90,11 @@ options {
                 sh 'docker push papajool/mle-template:latest'
             }
         }
-	    stage ('Invoke_pipeline') {            steps {
-		build job: 'Lab1 CD'
-		
-	    }
+	    
+		stage ('Invoke CD pipeline') {
+			steps{
+				build job: 'Lab1 CD'
+			}
         }
 	}
 
