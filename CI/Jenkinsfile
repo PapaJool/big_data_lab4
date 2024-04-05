@@ -57,7 +57,7 @@ options {
         //use for single container (with auth):
         //docker run --name mle-template_web_1 cd app && coverage run src/unit_tests/test_preprocess.py && coverage run -a src/unit_tests/test_training.py && coverage report -m
 
-        /* stage('Checkout container logs') {
+         stage('Checkout container logs') {
             steps {
                 dir("mle-template") {
                         sh '''
@@ -73,7 +73,7 @@ options {
                         '''
                     }
             }
-        } */
+        }
 
         stage('Checkout coverage report'){
             steps{
