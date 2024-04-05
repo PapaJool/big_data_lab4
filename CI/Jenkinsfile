@@ -98,8 +98,5 @@ options {
         always {
             sh 'docker logout'
         }
-		success {
-			build job: 'Lab1 CD', parameters:[]
-		}
     }
 }
