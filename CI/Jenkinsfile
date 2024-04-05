@@ -92,7 +92,7 @@ options {
         }
 	    stage ('Invoke_pipeline') {            steps {
 		build job: 'Lab1 CD'
-		]
+		
 	    }
         }
 	}
