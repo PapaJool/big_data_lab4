@@ -91,16 +91,15 @@ options {
             }
         }
 	    
-		stage ('Invoke CD pipeline') {
-			steps{
-				build job: 'Lab1 CD'
-			}
-        }
-		}
+		
+	}
 
     post {
         always {
             sh 'docker logout'
         }
+		success {
+			build job: 'Lab1 CD', parametrs:[]
+		}
     }
 }
