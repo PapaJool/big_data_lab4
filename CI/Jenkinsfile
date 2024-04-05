@@ -99,7 +99,7 @@ options {
             sh 'docker logout'
         }
 		success {
-			build job: 'Lab1 CD', parametrs:[]
+			build job: 'Lab1 CD', parameters:[]
 		}
     }
 }
