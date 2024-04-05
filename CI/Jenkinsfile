@@ -96,7 +96,7 @@ options {
 				build job: 'Lab1 CD'
 			}
         }
-	}
+		}
 
     post {
         always {
