@@ -61,7 +61,7 @@ options {
             steps {
                 dir("mle-template") {
                         sh '''
-                            docker-compose up -d
+                            docker compose up -d
                             for /f %%i in ('docker ps -qf "name=^mle-template-web-1"') do set containerId=%%i
                             echo %containerId%
                             IF "%containerId%" == "" (
