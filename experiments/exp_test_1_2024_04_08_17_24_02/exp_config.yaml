@@ -1,0 +1,9 @@
+model: RAND_FOREST
+model params:
+  n_estimators: '100'
+  criterion: entropy
+  path: /Users/papajool/Downloads/mle-template-main/experiments/rand_forest.sav
+tests: func
+score: '0.0'
+X_test path: /Users/papajool/Downloads/mle-template-main/data/Test_Abalone_X.csv
+y_test path: /Users/papajool/Downloads/mle-template-main/data/Test_Abalone_y.csv

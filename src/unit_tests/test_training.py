@@ -5,6 +5,7 @@ import pandas as pd
 import sys
 
 sys.path.insert(1, os.path.join(os.getcwd(), "src"))
+#sys.path.insert(1, "/Users/papajool/Downloads/mle-template-main/src")
 
 from train import MultiModel
 

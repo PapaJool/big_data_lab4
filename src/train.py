@@ -19,7 +19,6 @@ SHOW_LOG = True
 
 
 class MultiModel():
-
     def __init__(self) -> None:
         logger = Logger(SHOW_LOG)
         self.config = configparser.ConfigParser()
@@ -37,6 +36,7 @@ class MultiModel():
         self.X_train = sc.fit_transform(self.X_train)
         self.X_test = sc.transform(self.X_test)
         self.project_path = os.path.join(os.getcwd(), "experiments")
+        #self.project_path = "/Users/papajool/Downloads/mle-template-main/experiments"
         self.log_reg_path = os.path.join(self.project_path, "log_reg.sav")
         self.rand_forest_path = os.path.join(
             self.project_path, "rand_forest.sav")
@@ -49,7 +49,7 @@ class MultiModel():
     def log_reg(self, predict=False) -> bool:
         classifier = LogisticRegression()
         try:
-            classifier.fit(self.X_train, self.y_train)
+            classifier.fit(self.X_train, self.y_train.values.ravel())
         except Exception:
             self.log.error(traceback.format_exc())
             sys.exit(1)
@@ -72,7 +72,7 @@ class MultiModel():
             classifier = RandomForestClassifier(
                 n_estimators=n_trees, criterion=criterion)
         try:
-            classifier.fit(self.X_train, self.y_train)
+            classifier.fit(self.X_train, self.y_train.values.ravel())
         except Exception:
             self.log.error(traceback.format_exc())
             sys.exit(1)
@@ -97,7 +97,7 @@ class MultiModel():
             classifier = KNeighborsClassifier(
                 n_neighbors=n_neighbors, metric=metric, p=p)
         try:
-            classifier.fit(self.X_train, self.y_train)
+            classifier.fit(self.X_train, self.y_train.values.ravel())
         except Exception:
             self.log.error(traceback.format_exc())
             sys.exit(1)
@@ -122,7 +122,7 @@ class MultiModel():
         else:
             classifier = SVC(kernel=kernel, random_state=random_state)
         try:
-            classifier.fit(self.X_train, self.y_train)
+            classifier.fit(self.X_train, self.y_train.values.ravel())
         except Exception:
             self.log.error(traceback.format_exc())
             sys.exit(1)
@@ -137,7 +137,7 @@ class MultiModel():
     def gnb(self, predict=False) -> bool:
         classifier = GaussianNB()
         try:
-            classifier.fit(self.X_train, self.y_train)
+            classifier.fit(self.X_train, self.y_train.values.ravel())
         except Exception:
             self.log.error(traceback.format_exc())
             sys.exit(1)
@@ -159,7 +159,7 @@ class MultiModel():
         else:
             classifier = DecisionTreeClassifier(criterion=criterion)
         try:
-            classifier.fit(self.X_train, self.y_train)
+            classifier.fit(self.X_train, self.y_train.values.ravel())
         except Exception:
             self.log.error(traceback.format_exc())
             sys.exit(1)
@@ -190,3 +190,4 @@ if __name__ == "__main__":
     multi_model.svm(use_config=False, predict=True)
     multi_model.gnb(predict=True)
     multi_model.d_tree(use_config=False, predict=True)
+

@@ -76,6 +76,8 @@ class Predictor():
         elif args.tests == "func":
             tests_path = os.path.join(os.getcwd(), "tests")
             exp_path = os.path.join(os.getcwd(), "experiments")
+            #tests_path = '/Users/papajool/Downloads/mle-template-main/tests'
+            #exp_path = '/Users/papajool/Downloads/mle-template-main/experiments'
             for test in os.listdir(tests_path):
                 with open(os.path.join(tests_path, test)) as f:
                     try:
