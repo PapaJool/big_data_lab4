@@ -76,7 +76,7 @@ options {
 
         stage('Checkout coverage report'){
             steps{
-                dir("mle-template"){
+                dir("big_data_lab2"){
                     sh '''
                     docker compose logs -t --tail 10
                     '''
