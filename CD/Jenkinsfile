@@ -11,7 +11,7 @@ pipeline {
         
         stage('Run container') {
             steps {
-                sh 'curl https://raw.githubusercontent.com/PapaJool/mle-template/main/docker-compose.yml -o docker-compose.yml'
+                sh 'curl https://raw.githubusercontent.com/PapaJool/big_data_lab2/main/docker-compose.yml -o docker-compose.yml'
                 sh 'dir'
                 sh 'docker compose up'
             }

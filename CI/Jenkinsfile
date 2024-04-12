@@ -16,7 +16,7 @@ options {
         stage('Clone github repository') {
             steps {
                 cleanWs()
-                sh 'git clone -b main https://github.com/PapaJool/mle-template'
+                sh 'git clone -b main https://github.com/PapaJool/big_data_lab2'
 				}
 			}
 
