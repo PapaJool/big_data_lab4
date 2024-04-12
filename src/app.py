@@ -3,12 +3,14 @@ import pandas as pd
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import joblib
+import os
 
 # Создаем экземпляр FastAPI
 app = FastAPI()
 
 # Загружаем модель
-model_path = '/Users/papajool/Downloads/mle-template-main/experiments/log_reg.sav'
+exp_path = os.path.join(os.getcwd(), "experiments")
+model_path = os.path.join(exp_path, "log_reg.sav")
 model = joblib.load(model_path)
 
 
