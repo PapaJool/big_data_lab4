@@ -12,7 +12,12 @@ RUN pip install --upgrade pip
 
 RUN pip install -r requirements.txt
 
+# Run your app
 COPY . /app
 
 EXPOSE 8001
+
+ENV PYTHONPATH "${PYTHONPATH}:/app"
+
+CMD ["uvicorn", "src.app:app", "--reload" ,"--host", "0.0.0.0", "--port", "8001"]
 
