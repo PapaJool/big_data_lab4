@@ -3,16 +3,15 @@ services:
    web:
        build:
           dockerfile: model.dockerfile
-       command: bash -c "python src/preprocess.py && python src/train.py && python src/predict.py -m LOG_REG -t func && coverage run src/unit_tests/test_preprocess.py && coverage run -a src/unit_tests/test_training.py && coverage report -m"
+       command: bash -c "python src/preprocess.py && python src/train.py && python src/predict.py -m LOG_REG -t func && coverage run src/unit_tests/test_preprocess.py && coverage run -a src/unit_tests/test_training.py && coverage report -m && uvicorn src.app:app --reload"
        ports:
            - 8000:8000
        image: papajool/big_data_lab2:latest
-       environment:
-           - PYTHONPATH=/app
-       command: uvicorn src.app:app --reload
+
 
    clickhouse:
      image: clickhouse/clickhouse-server
      ports:
        - 8123:8123
        - 9000:9000
+
