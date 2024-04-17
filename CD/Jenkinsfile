@@ -5,7 +5,7 @@ pipeline {
         stage('Pull image') {
             steps {
                 echo 'Updating docker image'
-                sh 'docker pull papajool/mle-template:latest'
+                sh 'docker pull papajool/big_data_lab2:latest'
             }
         }
         

@@ -86,7 +86,7 @@ options {
 
         stage('Push'){
             steps{
-                sh 'docker push papajool/mle-template:latest'
+                sh 'docker push papajool/big_data_lab2:latest'
             }
         }
 	    
