@@ -7,10 +7,12 @@ services:
        ports:
            - 8000:8000
        image: papajool/big_data_lab2:latest
+       environment:
+           - PYTHONPATH=/app
+       command: uvicorn src.app:app --reload
 
    clickhouse:
      image: clickhouse/clickhouse-server
      ports:
        - 8123:8123
        - 9000:9000
-
