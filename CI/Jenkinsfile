@@ -96,7 +96,6 @@ options {
     post {
         always {
             sh 'docker logout'
-            sh 'docker compose down'
         }
     }
 }
