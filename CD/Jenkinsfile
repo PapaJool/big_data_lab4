@@ -8,7 +8,7 @@ pipeline {
                 sh 'docker pull papajool/big_data_lab2:latest'
             }
         }
-        
+
         stage('Prepare environment') {
             steps {
                 sh 'echo "CLICKHOUSE_HOST=clickhouse" > big_data_lab2/.env'
