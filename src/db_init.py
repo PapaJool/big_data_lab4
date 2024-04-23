@@ -3,7 +3,6 @@ import clickhouse_connect
 import pandas as pd
 from typing import Dict
 
-
 class Database():
     def __init__(self):
         host = os.getenv('CLICKHOUSE_HOST', 'clickhouse')
@@ -23,7 +22,8 @@ class Database():
             CREATE TABLE IF NOT EXISTS {table_name} 
             (
                 {cols}
-                `timestamp` DateTime('UTC') DEFAULT now()
+                `timestamp` DateTime('UTC') DEFAULT now(),
+                `insert_time` DateTime DEFAULT now()
             ) ENGINE = MergeTree
             ORDER BY tuple();  -- No specific order needed
         """)
@@ -52,4 +52,4 @@ class Database():
 if __name__ == '__main__':
     db = Database()
     db.create_database("lab2_bd")
-    db.create_table("predictions", {'X': 'String', 'y': 'String', 'predictions': 'String', 'timestamp': 'DateTime'})
+    db.create_table("predictions", {'X': 'String', 'y': 'String', 'predictions': 'String'})
