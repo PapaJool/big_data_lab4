@@ -48,8 +48,3 @@ class Database():
 
     def table_exists(self, table_name: str):
         return self.client.query_df(f'EXISTS {table_name}')
-
-if __name__ == '__main__':
-    db = Database()
-    db.create_database("lab2_bd")
-    db.create_table("predictions", {'X': 'String', 'y': 'String', 'predictions': 'String'})
