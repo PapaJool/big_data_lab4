@@ -1,36 +1,60 @@
+#!/usr/bin/env python3 -u
+
 import os
+
+import clickhouse_connect
 import pandas as pd
-from sqlalchemy import create_engine
-from clickhouse_sqlalchemy import types
+from typing import Dict
 
-class DB_Connection:
+
+class Database():
     def __init__(self):
-        print("Connecting to ClickHouse")
-        self.engine = create_engine('clickhouse://localhost/default')
+        host = os.getenv('CLICKHOUSE_HOST', '8124')
+        port = int(os.getenv('CLICKHOUSE_PORT', '8124'))
+        username = os.getenv('CLICKHOUSE_LOGIN', 'default')
+        password = os.getenv('CLICKHOUSE_PWD')
+        self.client = clickhouse_connect.get_client(host=host, username=username, port=port, password=password)
 
-    def drop(self, table_name: str) -> None:
-        print(f"Dropping table {table_name}")
-        with self.engine.connect() as con:
-            con.execute(f"DROP TABLE IF EXISTS {table_name}")
+    def create_database(self, database_name="lab2_bd"):
+        self.client.command(f"""CREATE DATABASE IF NOT EXISTS {database_name};""")
 
-    def append_df(self, df: pd.DataFrame, table_name: str) -> None:
-        print(f"Appending data to {table_name}")
-        df.to_sql(table_name, con=self.engine, if_exists='append', index=False, dtype=types.to_dict(df))
+    def create_table(self, table_name: str, columns: Dict):
+        cols = ""
+        for k, v in columns.items():
+            cols += f"`{k}` {v}, "
+        id_column = list(filter(lambda i: 'Id' in i[0], columns.items()))[0][0]
+        self.client.command(f"""
+            CREATE TABLE IF NOT EXISTS {table_name} 
+            (
+                {cols}
+            ) ENGINE = MergeTree
+            ORDER BY {id_column};
+        """)
 
-    def get_df(self, table_name: str) -> pd.DataFrame:
-        print(f"Get data from {table_name}")
-        query = f"SELECT * FROM {table_name}"
-        return pd.read_sql(query, self.engine)
+    def insert_df(self, tablename: str, df: pd.DataFrame):
+        self.client.insert_df(tablename, df)
 
+    def read_table(self, tablename: str) -> pd.DataFrame:
+        return self.client.query_df(f'SELECT * FROM {tablename}')
+
+    def drop_database(self, database_name: str):
+        self.client.command(f'DROP DATABASE IF EXISTS {database_name}')
+
+    def drop_table(self, table_name: str):
+        self.client.command(f'DROP TABLE IF EXISTS {table_name}')
+
+    def table_exists(self, table_name: str):
+        return self.client.query_df(f'EXISTS {table_name}')
 
 if __name__ == '__main__':
-    connection = DB_Connection()
-    df = pd.read_csv('data/Test_Abalone_X.csv')
-    connection.drop('test')
-    connection.append_df(df, 'test')
-    connection.append_df(df, 'test')
-    df_get = connection.get_df('test')
-    connection.drop('test')
-    connection = DB_Connection()
-    connection = DB_Connection()
-    print(len(df), len(df_get))
+    db = Database()
+    db.create_database("lab2_bd")
+    db.create_table("test1", {'nameId': 'UInt32'})
+    db.create_table("test2", {'nameId': 'UInt32', 'name3': 'UInt32'})
+    db.insert_df("test1", pd.DataFrame({"nameId": [1]}))
+    db.insert_df("test2", pd.DataFrame({"nameId": [1], "name3": [1]}))
+    print(db.read_table("test1"))
+    print(db.read_table("test2"))
+    db.drop_table("test1")
+    db.drop_table("test2")
+    db.drop_database("lab2_bd")
