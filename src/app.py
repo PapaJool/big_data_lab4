@@ -6,7 +6,7 @@ import joblib
 import os
 
 # Database class
-from db_init import Database  # Import your Database class
+import db_init
 
 # Создаем экземпляр FastAPI
 app = FastAPI()
@@ -17,7 +17,7 @@ model_path = os.path.join(exp_path, "log_reg.sav")
 model = joblib.load(model_path)
 
 # Initialize the database
-db = Database()
+db = db_init.Database()
 
 # Define the Pydantic input data model
 class InputData(BaseModel):
