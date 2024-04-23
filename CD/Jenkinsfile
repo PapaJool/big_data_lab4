@@ -11,8 +11,8 @@ pipeline {
 
         stage('Prepare environment') {
             steps {
-                sh 'echo "CLICKHOUSE_HOST=clickhouse" > Lab2 CD/.env'
-                sh 'echo "CLICKHOUSE_PORT=9000" >> Lab2 CD/.env'
+                sh 'echo "CLICKHOUSE_HOST=0.0.0.0" > Lab2 CD/.env'
+                sh 'echo "CLICKHOUSE_PORT=8123" >> Lab2 CD/.env'
                 sh 'echo "CLICKHOUSE_USER=${CLICKHOUSE_CREDS_USR}" > Lab2 CD/.env'
                 sh 'echo "CLICKHOUSE_PASSWORD=${CLICKHOUSE_CREDS_PSW}" > Lab2 CD/.env'
                  }
