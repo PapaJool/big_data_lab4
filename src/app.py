@@ -5,32 +5,39 @@ from pydantic import BaseModel
 import joblib
 import os
 
+# Database class
+from db_init import Database  # Import your Database class
+
 # Создаем экземпляр FastAPI
 app = FastAPI()
 
-# Загружаем модель
+# Load model
 exp_path = os.path.join(os.getcwd(), "experiments")
 model_path = os.path.join(exp_path, "log_reg.sav")
 model = joblib.load(model_path)
 
+# Initialize the database
+db = Database()
 
-# Определяем класс Pydantic модели для входных данных
+# Define the Pydantic input data model
 class InputData(BaseModel):
     X: list
     y: list
 
-
-# Определяем эндпоинт для предсказаний
+# Define the endpoint for predictions
 @app.post("/predict/")
 async def predict(input_data: InputData):
     try:
-        # Преобразуем данные в DataFrame
+        # Convert data to DataFrame
         df = pd.DataFrame(input_data.X, columns=[str(i) for i in range(len(input_data.X[0]))])
 
-        # Выполняем предсказание
+        # Perform prediction
         predictions = model.predict(df)
 
-        # Формируем ответ
+        # Save predictions to the database with timestamp
+        db.insert_data("predictions", input_data.X, input_data.y, predictions)
+
+        # Formulate response
         response = {"predictions": predictions.tolist()}
         return response
 
@@ -38,15 +45,14 @@ async def predict(input_data: InputData):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# Swagger UI
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.openapi.utils import get_openapi
 from fastapi.openapi.docs import get_swagger_ui_html
 
-
 @app.get("/docs", response_class=HTMLResponse)
 async def custom_swagger_ui_html():
     return get_swagger_ui_html(openapi_url="/openapi.json", title="API docs")
-
 
 @app.get("/openapi.json", include_in_schema=False)
 async def get_open_api_endpoint():
