@@ -62,6 +62,22 @@ options {
                 }
             }
 
+       stage('Create ClickHouse User') {
+            steps {
+                script {
+                    def clickhouseHost = "clickhouse"
+                    def clickhousePort = 8123
+
+                    def clickhouseUser = env.CLICKHOUSE_USER
+                    def clickhousePassword = env.CLICKHOUSE_PASSWORD
+
+                    def createUserCommand = "curl -X POST -H 'Content-Type: application/json' -d '{\"password\":\"${clickhousePassword}\"}' http://${clickhouseHost}:${clickhousePort}/user/${clickhouseUser}"
+
+                    sh createUserCommand
+                }
+            }
+        }
+
         // use for multi containers:
         //docker exec %containerId% cd app && coverage run src/unit_tests/test_preprocess.py && coverage run -a src/unit_tests/test_training.py && coverage report -m
         //use for single container (with auth):
