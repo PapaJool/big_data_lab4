@@ -83,7 +83,7 @@ options {
 
     post {
         always {
-            sh 'docker compose -f big_data_lab2/docker-compose.yml down'
+            //sh 'docker compose -f big_data_lab2/docker-compose.yml down'
             sh 'docker logout'
         }
     }
