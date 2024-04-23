@@ -9,6 +9,8 @@ services:
     environment:
       - CLICKHOUSE_USER
       - CLICKHOUSE_PASSWORD
+    build:
+      network: lab2-network
 
   web:
     env_file:
@@ -17,6 +19,7 @@ services:
       - clickhouse
     build:
       dockerfile: model.dockerfile
+      network: lab2-network
     environment:
       - CLICKHOUSE_USER
       - CLICKHOUSE_PASSWORD
