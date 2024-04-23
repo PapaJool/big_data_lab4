@@ -1,17 +1,33 @@
 version: '3.8'
 services:
-   web:
-       build:
-          dockerfile: model.dockerfile
-       command: bash -c "python src/preprocess.py && python src/train.py && python src/predict.py -m LOG_REG -t func && coverage run src/unit_tests/test_preprocess.py && coverage run -a src/unit_tests/test_training.py && coverage report -m && uvicorn src.app:app --host 0.0.0.0 --port 8000"
-       ports:
-           - 8000:8000
-       image: papajool/big_data_lab2:latest
+  clickhouse-db:
+    image: yandex/clickhouse-server
+    ports:
+      - 9000:9000
+    environment:
+      - CLICKHOUSE_USER
+      - CLICKHOUSE_PASSWORD
+    healthcheck:
+      test: [ "CMD", "clickhouse-client", "-h", "localhost", "--query", "SELECT 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  web:
+    depends_on:
+      clickhouse-db:
+        condition: service_healthy
+    build:
+      dockerfile: model.dockerfile
+    environment:
+      - CLICKHOUSE_USER
+      - CLICKHOUSE_PASSWORD
+    command: bash -c "python src/preprocess.py && python src/train.py && python src/predict.py -m LOG_REG -t func && coverage run src/unit_tests/test_preprocess.py && coverage run -a src/unit_tests/test_training.py && coverage report -m && uvicorn src.app:app --host 0.0.0.0 --port 8000"
+    ports:
+      - 8000:8000
+    image: papajool/big_data_lab2:latest
+    links: clickhouse-db:database
 
 
-   clickhouse:
-     image: clickhouse/clickhouse-server
-     ports:
-       - 8123:8123
-       - 9000:9000
+
 
