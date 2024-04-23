@@ -5,6 +5,11 @@ from pydantic import BaseModel
 import joblib
 import os
 
+import sys  # Добавляем модуль sys
+
+# Добавляем текущий каталог в PYTHONPATH
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 # Database class
 import db_init
 
