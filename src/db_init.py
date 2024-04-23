@@ -9,7 +9,7 @@ from typing import Dict
 
 class Database():
     def __init__(self):
-        host = os.getenv('CLICKHOUSE_HOST', '0.0.0.0')
+        host = os.getenv('CLICKHOUSE_HOST', 'localhost')
         port = int(os.getenv('CLICKHOUSE_PORT', '8123'))
         username = os.getenv('CLICKHOUSE_LOGIN', 'default')
         password = os.getenv('CLICKHOUSE_PWD', '0000')
