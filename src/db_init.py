@@ -12,7 +12,7 @@ class Database():
         host = os.getenv('CLICKHOUSE_HOST', '0.0.0.0')
         port = int(os.getenv('CLICKHOUSE_PORT', '8123'))
         username = os.getenv('CLICKHOUSE_LOGIN', 'default')
-        password = os.getenv('CLICKHOUSE_PWD')
+        password = os.getenv('CLICKHOUSE_PWD', '')
         self.client = clickhouse_connect.get_client(host=host, username=username, port=port, password=password)
 
     def create_database(self, database_name="lab2_bd"):

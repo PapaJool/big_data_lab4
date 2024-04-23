@@ -5,13 +5,10 @@ services:
     ports:
       - 9000:9000
       - 8123:8123
+      - 9009:9009
     environment:
       - CLICKHOUSE_USER
       - CLICKHOUSE_PASSWORD
-    volumes:
-      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
-      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
-      - ${PWD}/fs/volumes/clickhouse/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
 
   web:
     env_file:
