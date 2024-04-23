@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   clickhouse-db:
-    image: yandex/clickhouse-server
+    image: clickhouse/clickhouse-server
     ports:
       - 9000:9000
     environment:
@@ -26,7 +26,6 @@ services:
     ports:
       - 8000:8000
     image: papajool/big_data_lab2:latest
-    links: clickhouse-db:database
 
 
 
