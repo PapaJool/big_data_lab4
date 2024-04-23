@@ -33,16 +33,13 @@ class InputData(BaseModel):
 @app.post("/predict/")
 async def predict(input_data: InputData):
     try:
-        # Convert data to DataFrame
+        # Преобразуем данные в DataFrame
         df = pd.DataFrame(input_data.X, columns=[str(i) for i in range(len(input_data.X[0]))])
 
-        # Perform prediction
+        # Выполняем предсказание
         predictions = model.predict(df)
 
-        # Save predictions to the database with timestamp
-        db.insert_data("predictions", input_data.X, input_data.y, predictions)
-
-        # Formulate response
+        # Формируем ответ
         response = {"predictions": predictions.tolist()}
         return response
 
