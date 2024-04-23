@@ -1,4 +1,9 @@
 version: '3.8'
+
+networks:
+  lab2-network:
+    driver: bridge
+
 services:
   clickhouse:
     image: clickhouse/clickhouse-server
@@ -9,8 +14,9 @@ services:
     environment:
       - CLICKHOUSE_USER
       - CLICKHOUSE_PASSWORD
-    build:
-      network: lab2-network
+    networks:
+      - lab2-network
+
 
   web:
     env_file:
@@ -19,7 +25,8 @@ services:
       - clickhouse
     build:
       dockerfile: model.dockerfile
-      network: lab2-network
+    networks:
+      - lab2-network
     environment:
       - CLICKHOUSE_USER
       - CLICKHOUSE_PASSWORD
