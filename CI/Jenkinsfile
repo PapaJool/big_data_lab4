@@ -65,7 +65,7 @@ options {
        stage('Create ClickHouse User') {
             steps {
                 script {
-                    sh 'curl -X POST -H Content-Type: application/json -d "{\"password\":\"${CLICKHOUSE_PASSWORD}\"}" http://clickhouse-db:8123/user/${CLICKHOUSE_USER}'
+                    sh "curl -X POST -H 'Content-Type: application/json' -d '{\"password\":\"${CLICKHOUSE_PASSWORD}\"}' http://clickhouse-db:8123/user/${CLICKHOUSE_USER}"
                 }
             }
         }
