@@ -29,8 +29,8 @@ class Database():
         """)
 
     def insert_data(self, tablename: str, X, y, predictions):
-        # Combine X, y, and predictions into a DataFrame
-        df = pd.DataFrame({'X': [X], 'y': [y], 'predictions': [predictions]})
+        # Create a DataFrame with X, y, and predictions
+        df = pd.DataFrame({'X': X, 'y': y, 'predictions': predictions})
         # Insert into the database
         self.insert_df(tablename, df)
 
