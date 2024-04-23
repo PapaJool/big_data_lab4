@@ -9,8 +9,6 @@ services:
     environment:
       - CLICKHOUSE_USER
       - CLICKHOUSE_PASSWORD
-    networks:
-      - lab2-network
 
   web:
     env_file:
@@ -26,8 +24,6 @@ services:
     ports:
       - 8000:8000
     image: papajool/big_data_lab2:latest
-    networks:
-      - lab2-network
 
 
 
