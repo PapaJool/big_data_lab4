@@ -29,9 +29,14 @@ class Database():
         """)
 
     def insert_data(self, tablename: str, X, y, predictions):
-        # Create a DataFrame with X, y, and predictions
-        df = pd.DataFrame({'X': X, 'y': y, 'predictions': predictions})
-        # Insert into the database
+        # Получаем значения из словарей внутри списков
+        X_values = [v for v in X[0].values()]
+        y_values = [v for v in y[0].values()]
+
+        # Создаем DataFrame из значений
+        df = pd.DataFrame({'X': X_values, 'y': y_values, 'predictions': predictions})
+
+        # Вставляем данные в базу данных
         self.insert_df(tablename, df)
 
     def insert_df(self, tablename: str, df: pd.DataFrame):
