@@ -35,16 +35,21 @@ class InputData(BaseModel):
 @app.post("/predict/")
 async def predict(input_data: InputData):
     try:
-        # Convert data to DataFrame
-        df = pd.DataFrame(input_data.X, columns=[str(i) for i in range(len(input_data.X[0]))])
+        X_values = []
+        y_values = []
 
-        # Perform prediction
-        predictions = model.predict(df)
+        # Извлекаем значения из всех образцов
+        for i in range(len(input_data.X)):
+            X_values.append([v for v in input_data.X[i].values()])
+            y_values.append([v for v in input_data.y[i].values()])
 
-        # Save predictions to the database with timestamp
-        db.insert_data("predictions", input_data.X, input_data.y, predictions)
+        # Выполняем прогноз
+        predictions = model.predict(pd.DataFrame(X_values))
 
-        # Formulate response
+        # Сохраняем прогнозы в базу данных с отметкой времени
+        db.insert_data("predictions", X_values, y_values, predictions)
+
+        # Формируем ответ
         response = {"predictions": predictions.tolist()}
         return response
 

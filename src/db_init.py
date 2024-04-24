@@ -29,9 +29,15 @@ class Database():
         """)
 
     def insert_data(self, tablename: str, X, y, predictions):
-        # Получаем значения из словарей внутри списков
-        X_values = [v for v in X[0].values()]
-        y_values = [v for v in y[0].values()]
+        X_values = []
+        y_values = []
+
+        # Извлекаем значения из всех образцов
+        for i in range(len(X)):
+            X_values.append(
+                [v for v in X[i].values()][0])  # Предполагается, что каждый образец имеет только одно значение
+            y_values.append(
+                [v for v in y[i].values()][0])  # Предполагается, что каждый образец имеет только одно значение
 
         # Создаем DataFrame из значений
         df = pd.DataFrame({'X': X_values, 'y': y_values, 'predictions': predictions})
