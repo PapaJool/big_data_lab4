@@ -60,6 +60,9 @@ async def check_predictions():
         # Читаем данные из таблицы "predictions"
         data = db.read_table("predictions")
 
+        # Преобразуем значения столбца X в списки
+        data['X'] = data['X'].apply(lambda x: list(x))
+
         # Преобразуем DataFrame в JSON
         data_json = data.to_dict(orient="records")
 
@@ -80,5 +83,3 @@ async def custom_swagger_ui_html():
 @app.get("/openapi.json", include_in_schema=False)
 async def get_open_api_endpoint():
     return JSONResponse(get_openapi(title="Your Project Name", version="0.1.0", routes=app.routes))
-
-
