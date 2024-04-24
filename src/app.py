@@ -24,7 +24,7 @@ model = joblib.load(model_path)
 # Initialize the database
 db = db_init.Database()
 db.create_database("lab2_bd")
-db.create_table("predictions", {'X': 'String', 'y': 'String', 'predictions': 'String'})
+db.create_table("predictions", {'X': 'Array(String)', 'y': 'String', 'predictions': 'String'})
 
 # Define the Pydantic input data model
 class InputData(BaseModel):
@@ -35,22 +35,18 @@ class InputData(BaseModel):
 @app.post("/predict/")
 async def predict(input_data: InputData):
     try:
-        X_values = [x.values() for x in input_data.X]
-        y_values = [y.values() for y in input_data.y]
+        # Perform prediction
+        predictions = model.predict(pd.DataFrame(input_data.X))
 
-        # Выполняем прогноз
-        predictions = model.predict(pd.DataFrame(X_values))
+        # Save predictions to the database with timestamp
+        db.insert_data("predictions", input_data.X, input_data.y[0], predictions)
 
-        # Сохраняем прогнозы в базу данных с отметкой времени
-        db.insert_data("predictions", X_values, y_values, predictions)
-
-        # Формируем ответ
+        # Formulate response
         response = {"predictions": predictions.tolist()}
         return response
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 
 # Swagger UI

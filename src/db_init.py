@@ -30,14 +30,15 @@ class Database():
         """)
 
     def insert_data(self, tablename: str, X, y, predictions):
-        X_values = X.tolist() if isinstance(X, np.ndarray) else X
-        y_values = y.tolist() if isinstance(y, np.ndarray) else y
+        try:
+            # Создаем DataFrame из входных данных
+            df = pd.DataFrame({'X': X, 'y': [y] * len(X), 'predictions': predictions})
 
-        # Создаем DataFrame из значений
-        df = pd.DataFrame({'X': X_values, 'y': y_values, 'predictions': predictions})
+            # Вставляем данные в базу данных
+            self.insert_df(tablename, df)
 
-        # Вставляем данные в базу данных
-        self.insert_df(tablename, df)
+        except Exception as e:
+            print(f"Error inserting data into table {tablename}: {e}")
 
     def insert_df(self, tablename: str, df: pd.DataFrame):
         self.client.insert_df(tablename, df)
