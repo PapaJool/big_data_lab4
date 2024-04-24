@@ -35,8 +35,8 @@ class InputData(BaseModel):
 @app.post("/predict/")
 async def predict(input_data: InputData):
     try:
-        X = pd.DataFrame(input_data.X)
-        y = input_data.y[0]
+        X = [[float(val) for val in sample.values()] for sample in input_data.X]
+        y = int(input_data.y[0])
 
         predictions = model.predict(X)
 
@@ -47,6 +47,7 @@ async def predict(input_data: InputData):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/check_predictions/")
 async def check_predictions():
