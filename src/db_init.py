@@ -35,6 +35,7 @@ class Database():
             # Преобразуем X и predictions в кортежи
             X_values = tuple(X)
             predictions_values = tuple(predictions)
+            y = tuple(y)
 
             # Формируем кортеж значений для вставки
             values = (X_values, y, predictions_values)
