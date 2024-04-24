@@ -23,8 +23,7 @@ class Database():
             CREATE TABLE IF NOT EXISTS {table_name} 
             (
                 {cols}
-                `timestamp` DateTime('UTC') DEFAULT now(),
-                `insert_time` DateTime DEFAULT now()
+                `insert_time` DateTime('UTC') DEFAULT now(),
             ) ENGINE = MergeTree
             ORDER BY tuple();  -- No specific order needed
         """)
@@ -32,7 +31,7 @@ class Database():
     def insert_data(self, tablename: str, X, y, predictions):
         try:
             # Создаем DataFrame из входных данных
-            df = pd.DataFrame({'X': X, 'y': [y], 'predictions': predictions})
+            df = pd.DataFrame({'X': X, 'y': y, 'predictions': predictions})
 
             # Вставляем данные в базу данных
             self.insert_df(tablename, df)

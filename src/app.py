@@ -35,8 +35,10 @@ class InputData(BaseModel):
 @app.post("/predict/")
 async def predict(input_data: InputData):
     try:
-        X = [[float(val) for val in sample.values()] for sample in input_data.X]
-        y = int(input_data.y[0]['0'])  # Получаем значение из словаря
+        # Преобразуем данные X в одномерный массив
+        X = [list(sample.values()) for sample in input_data.X[0].values()]
+
+        y = input_data.y[0]
 
         predictions = model.predict(X)
 
@@ -76,3 +78,5 @@ async def custom_swagger_ui_html():
 @app.get("/openapi.json", include_in_schema=False)
 async def get_open_api_endpoint():
     return JSONResponse(get_openapi(title="Your Project Name", version="0.1.0", routes=app.routes))
+
+
