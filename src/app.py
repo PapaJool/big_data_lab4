@@ -36,7 +36,7 @@ class InputData(BaseModel):
 async def predict(input_data: InputData):
     try:
         X = [[float(val) for val in sample.values()] for sample in input_data.X]
-        y = int(input_data.y[0])
+        y = int(input_data.y[0]['0'])  # Получаем значение из словаря
 
         predictions = model.predict(X)
 
@@ -47,6 +47,7 @@ async def predict(input_data: InputData):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 
 @app.get("/check_predictions/")
