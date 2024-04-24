@@ -61,7 +61,6 @@ async def check_predictions():
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
 
 # Swagger UI
 from fastapi.responses import HTMLResponse, JSONResponse

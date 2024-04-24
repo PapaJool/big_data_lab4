@@ -32,7 +32,7 @@ class Database():
     def insert_data(self, tablename: str, X, y, predictions):
         try:
             # Создаем DataFrame из входных данных
-            df = pd.DataFrame({'X': X, 'y': [y] * len(X), 'predictions': predictions})
+            df = pd.DataFrame({'X': X, 'y': [y], 'predictions': predictions})
 
             # Вставляем данные в базу данных
             self.insert_df(tablename, df)
