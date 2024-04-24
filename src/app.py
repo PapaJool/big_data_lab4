@@ -48,6 +48,20 @@ async def predict(input_data: InputData):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/check_predictions/")
+async def check_predictions():
+    try:
+        # Читаем данные из таблицы "predictions"
+        data = db.read_table("predictions")
+
+        # Преобразуем DataFrame в JSON
+        data_json = data.to_dict(orient="records")
+
+        return {"predictions_data": data_json}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
 
 # Swagger UI
 from fastapi.responses import HTMLResponse, JSONResponse
