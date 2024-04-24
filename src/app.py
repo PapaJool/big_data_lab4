@@ -36,13 +36,13 @@ class InputData(BaseModel):
 async def predict(input_data: InputData):
     try:
         # Преобразуем данные X в одномерный массив
-        X = [list(sample.values()) for sample in input_data.X[0].values()]
-
-        y = input_data.y[0]
+        X_db = list(input_data.X[0].values())
+        X = [list(sample.values()) for sample in input_data.X]
+        y = input_data.y[0]['0']
 
         predictions = model.predict(X)
 
-        db.insert_data("predictions", X, y, predictions)
+        db.insert_data("predictions", X_db, y, predictions[0])
 
         response = {"predictions": predictions.tolist()}
         return response
