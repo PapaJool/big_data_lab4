@@ -32,19 +32,16 @@ class Database():
 
     def insert_data(self, tablename: str, X, y, predictions):
         try:
-            # Преобразуем X и predictions в кортежи
-            X_values = tuple(X)
-            predictions_values = tuple(predictions)
-            y = tuple(y)
-
-            # Формируем кортеж значений для вставки
-            values = (X_values, y, predictions_values)
+            # Преобразуем X и predictions в списки
+            X_values = X
+            predictions_values = predictions
+            y_value = y
 
             # Создаем запрос INSERT INTO ... VALUES
-            query = f"INSERT INTO {tablename} (X, y, predictions, insert_time) VALUES {values}"
+            query = f"INSERT INTO {tablename} (X, y, predictions, insert_time) VALUES (%s, %s, %s, NOW())"
 
-            # Выполняем запрос
-            self.client.command(query)
+            # Выполняем запрос с использованием защиты от SQL-инъекций
+            self.client.command(query, (X_values, y_value, predictions_values))
 
         except Exception as e:
             print(f"Ошибка при вставке данных в таблицу {tablename}: {e}")
@@ -57,6 +54,9 @@ class Database():
 
     def drop_table(self, table_name: str):
         self.client.command(f'DROP TABLE IF EXISTS {table_name}')
+
+    def delete_data(self, table_name: str):
+        self.client.command(f'DELETE FROM {table_name} WHERE 1=1')
 
     def table_exists(self, table_name: str):
         return self.client.query_df(f'EXISTS {table_name}')

@@ -5,7 +5,7 @@ from pydantic import BaseModel
 import joblib
 import os
 
-import sys  # Добавляем модуль sys
+import sys
 
 # Добавляем текущий каталог в PYTHONPATH
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -24,7 +24,7 @@ model = joblib.load(model_path)
 # Initialize the database
 db = db_init.Database()
 db.create_database("lab2_bd")
-db.create_table("predictions", {'X': 'Array(Float32)', 'y': 'Int', 'predictions': 'Int'})
+db.create_table("predictions", {'X': 'Array(Float64)', 'y': 'Int32', 'predictions': 'Int32'})
 
 # Define the Pydantic input data model
 class InputData(BaseModel):
@@ -42,8 +42,6 @@ async def predict(input_data: InputData):
 
         predictions = model.predict(X)
 
-        X_db = [float(val) for val in X_db]
-
         db.insert_data("predictions", X_db, int(y), int(predictions[0]))
 
         response = {"predictions": predictions.tolist()}
@@ -52,21 +50,22 @@ async def predict(input_data: InputData):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-
 @app.get("/check_predictions/")
-async def check_predictions():
+def check_predictions():
     try:
         # Читаем данные из таблицы "predictions"
         data = db.read_table("predictions")
+        data_json = data.to_json(orient="records")
 
-        # Преобразуем значения столбца X в списки
-        data['X'] = data['X'].apply(lambda x: list(x))
+        return data_json
 
-        # Преобразуем DataFrame в JSON
-        data_json = data.to_dict(orient="records")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-        return {"predictions_data": data_json}
+@app.get("/clear_table/")
+def clear_table():
+    try:
+        db.delete_data("predictions")
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
