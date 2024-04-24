@@ -42,7 +42,9 @@ async def predict(input_data: InputData):
 
         predictions = model.predict(X)
 
-        db.insert_data("predictions", X_db, y, predictions[0])
+        X_db = [float(val) for val in X_db]
+
+        db.insert_data("predictions", X_db, int(y), int(predictions[0]))
 
         response = {"predictions": predictions.tolist()}
         return response
