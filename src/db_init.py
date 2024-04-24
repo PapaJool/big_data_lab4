@@ -28,19 +28,25 @@ class Database():
             ORDER BY tuple();  -- No specific order needed
         """)
 
+    from datetime import datetime
+
     def insert_data(self, tablename: str, X, y, predictions):
         try:
-            # Convert list to tuple to prepare for insertion
-            values = tuple(X + [y] + predictions)
+            # Преобразуем X и predictions в кортежи
+            X_values = tuple(X)
+            predictions_values = tuple(predictions)
 
-            # Create the INSERT INTO ... VALUES statement
+            # Формируем кортеж значений для вставки
+            values = (X_values, y, predictions_values)
+
+            # Создаем запрос INSERT INTO ... VALUES
             query = f"INSERT INTO {tablename} (X, y, predictions, insert_time) VALUES {values}"
 
-            # Execute the query
+            # Выполняем запрос
             self.client.command(query)
 
         except Exception as e:
-            print(f"Error inserting data into table {tablename}: {e}")
+            print(f"Ошибка при вставке данных в таблицу {tablename}: {e}")
 
     def read_table(self, tablename: str) -> pd.DataFrame:
         return self.client.query_df(f'SELECT * FROM {tablename}')
