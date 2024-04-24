@@ -30,17 +30,17 @@ class Database():
 
     def insert_data(self, tablename: str, X, y, predictions):
         try:
-            # Создаем DataFrame из входных данных
-            df = pd.DataFrame({'X': X, 'y': y, 'predictions': predictions})
+            # Convert list to tuple to prepare for insertion
+            values = tuple(X + [y] + predictions)
 
-            # Вставляем данные в базу данных
-            self.insert_df(tablename, df)
+            # Create the INSERT INTO ... VALUES statement
+            query = f"INSERT INTO {tablename} (X, y, predictions, insert_time) VALUES {values}"
+
+            # Execute the query
+            self.client.command(query)
 
         except Exception as e:
             print(f"Error inserting data into table {tablename}: {e}")
-
-    def insert_df(self, tablename: str, df: pd.DataFrame):
-        self.client.insert_df(tablename, df)
 
     def read_table(self, tablename: str) -> pd.DataFrame:
         return self.client.query_df(f'SELECT * FROM {tablename}')
