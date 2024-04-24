@@ -24,7 +24,7 @@ model = joblib.load(model_path)
 # Initialize the database
 db = db_init.Database()
 db.create_database("lab2_bd")
-db.create_table("predictions", {'X': 'Array(String)', 'y': 'String', 'predictions': 'String'})
+db.create_table("predictions", {'X': 'Array(Int)', 'y': 'Int', 'predictions': 'Int'})
 
 # Define the Pydantic input data model
 class InputData(BaseModel):
@@ -35,13 +35,13 @@ class InputData(BaseModel):
 @app.post("/predict/")
 async def predict(input_data: InputData):
     try:
-        # Perform prediction
-        predictions = model.predict(pd.DataFrame(input_data.X))
+        X = pd.DataFrame(input_data.X)
+        y = input_data.y[0]
 
-        # Save predictions to the database with timestamp
-        db.insert_data("predictions", input_data.X, input_data.y[0], predictions)
+        predictions = model.predict(X)
 
-        # Formulate response
+        db.insert_data("predictions", X, y, predictions)
+
         response = {"predictions": predictions.tolist()}
         return response
 
