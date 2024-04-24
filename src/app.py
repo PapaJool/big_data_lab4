@@ -24,7 +24,7 @@ model = joblib.load(model_path)
 # Initialize the database
 db = db_init.Database()
 db.create_database("lab2_bd")
-db.create_table("predictions", {'X': 'Array(Int)', 'y': 'Int', 'predictions': 'Int'})
+db.create_table("predictions", {'X': 'Array(Float32)', 'y': 'Int', 'predictions': 'Int'})
 
 # Define the Pydantic input data model
 class InputData(BaseModel):
