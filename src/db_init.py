@@ -34,10 +34,8 @@ class Database():
 
         # Извлекаем значения из всех образцов
         for i in range(len(X)):
-            X_values.append(
-                [v for v in X[i].values()][0])  # Предполагается, что каждый образец имеет только одно значение
-            y_values.append(
-                [v for v in y[i].values()][0])  # Предполагается, что каждый образец имеет только одно значение
+            X_values.append(X[i])  # Добавляем сам список X[i]
+            y_values.append(y[i])  # Добавляем сам список y[i]
 
         # Создаем DataFrame из значений
         df = pd.DataFrame({'X': X_values, 'y': y_values, 'predictions': predictions})

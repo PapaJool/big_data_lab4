@@ -40,8 +40,8 @@ async def predict(input_data: InputData):
 
         # Извлекаем значения из всех образцов
         for i in range(len(input_data.X)):
-            X_values.append([v for v in input_data.X[i].values()])
-            y_values.append([v for v in input_data.y[i].values()])
+            X_values.append(input_data.X[i])
+            y_values.append(input_data.y[i])
 
         # Выполняем прогноз
         predictions = model.predict(pd.DataFrame(X_values))
