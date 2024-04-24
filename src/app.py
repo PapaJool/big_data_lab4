@@ -35,13 +35,8 @@ class InputData(BaseModel):
 @app.post("/predict/")
 async def predict(input_data: InputData):
     try:
-        X_values = []
-        y_values = []
-
-        # Извлекаем значения из всех образцов
-        for i in range(len(input_data.X)):
-            X_values.append(input_data.X[i])
-            y_values.append(input_data.y[i])
+        X_values = [x.values() for x in input_data.X]
+        y_values = [y.values() for y in input_data.y]
 
         # Выполняем прогноз
         predictions = model.predict(pd.DataFrame(X_values))
@@ -55,6 +50,7 @@ async def predict(input_data: InputData):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 
 # Swagger UI

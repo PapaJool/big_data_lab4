@@ -2,6 +2,7 @@ import os
 import clickhouse_connect
 import pandas as pd
 from typing import Dict
+import numpy as np
 
 class Database():
     def __init__(self):
@@ -29,13 +30,8 @@ class Database():
         """)
 
     def insert_data(self, tablename: str, X, y, predictions):
-        X_values = []
-        y_values = []
-
-        # Извлекаем значения из всех образцов
-        for i in range(len(X)):
-            X_values.append(X[i])  # Добавляем сам список X[i]
-            y_values.append(y[i])  # Добавляем сам список y[i]
+        X_values = X.tolist() if isinstance(X, np.ndarray) else X
+        y_values = y.tolist() if isinstance(y, np.ndarray) else y
 
         # Создаем DataFrame из значений
         df = pd.DataFrame({'X': X_values, 'y': y_values, 'predictions': predictions})
