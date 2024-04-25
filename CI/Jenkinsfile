@@ -17,22 +17,22 @@ options {
         stage('Clone github repository') {
             steps {
                 cleanWs()
-                sh 'git clone -b main https://github.com/PapaJool/big_data_lab2'
+                sh 'git clone -b main https://github.com/PapaJool/big_data_lab3'
 				}
 			}
 
 		stage('Prepare environment') {
             steps {
-                sh 'echo "CLICKHOUSE_HOST=clickhouse" > big_data_lab2/.env'
-                sh 'echo "CLICKHOUSE_PORT=8123" >> big_data_lab2/.env'
-                sh 'echo "CLICKHOUSE_USER=${CLICKHOUSE_CREDS_USR}" > big_data_lab2/.env'
-                sh 'echo "CLICKHOUSE_PASSWORD=${CLICKHOUSE_CREDS_PSW}" > big_data_lab2/.env'
+                sh 'echo "CLICKHOUSE_HOST=clickhouse" > big_data_lab3/.env'
+                sh 'echo "CLICKHOUSE_PORT=8123" >> big_data_lab3/.env'
+                sh 'echo "CLICKHOUSE_USER=${CLICKHOUSE_CREDS_USR}" > big_data_lab3/.env'
+                sh 'echo "CLICKHOUSE_PASSWORD=${CLICKHOUSE_CREDS_PSW}" > big_data_lab3/.env'
                  }
             }
 
         stage('Checkout repo dir') {
             steps {
-                sh 'cd big_data_lab2 && dir'
+                sh 'cd big_data_lab3 && dir'
 				}
 			}
 
@@ -49,12 +49,12 @@ options {
             steps {
                 script {
                     try {
-                        sh 'cd big_data_lab2 && docker compose build'
+                        sh 'cd big_data_lab3 && docker compose build'
                         }
 
                     finally {
                     sh '''
-                        cd big_data_lab2
+                        cd big_data_lab3
                         docker compose up -d
                         '''
                         }
@@ -64,7 +64,7 @@ options {
 
         stage('Checkout coverage report'){
             steps{
-                dir("big_data_lab2"){
+                dir("big_data_lab3"){
                     sh '''
                     docker compose logs -t --tail 10
                     '''
@@ -74,7 +74,7 @@ options {
 
         stage('Push'){
             steps{
-                sh 'docker push papajool/big_data_lab2:latest'
+                sh 'docker push papajool/big_data_lab3:latest'
             }
         }
 	    
@@ -83,7 +83,7 @@ options {
 
     post {
         always {
-            sh 'docker compose -f big_data_lab2/docker-compose.yml down'
+            sh 'docker compose -f big_data_lab3/docker-compose.yml down'
             sh 'docker logout'
         }
     }
