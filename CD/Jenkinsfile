@@ -11,7 +11,7 @@ pipeline {
 
         stage('Prepare environment') {
             steps {
-                sh 'echo "CLICKHOUSE_HOST=0.0.0.0" >> "/var/jenkins_home/workspace/Lab2 CD/.env"'
+                sh 'echo "CLICKHOUSE_HOST=сlickhouse" >> "/var/jenkins_home/workspace/Lab2 CD/.env"'
                 sh 'echo "CLICKHOUSE_PORT=8123" >> "/var/jenkins_home/workspace/Lab2 CD/.env"'
                 sh 'echo "CLICKHOUSE_USER=${CLICKHOUSE_CREDS_USR}" >> "/var/jenkins_home/workspace/Lab2 CD/.env"'
                 sh 'echo "CLICKHOUSE_PASSWORD=${CLICKHOUSE_CREDS_PSW}" >> "/var/jenkins_home/workspace/Lab2 CD/.env"'
