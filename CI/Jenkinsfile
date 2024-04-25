@@ -23,7 +23,7 @@ options {
 
 		stage('Prepare environment') {
             steps {
-                sh 'echo "CLICKHOUSE_HOST=0.0.0.0" > big_data_lab2/.env'
+                sh 'echo "CLICKHOUSE_HOST=clickhouse" > big_data_lab2/.env'
                 sh 'echo "CLICKHOUSE_PORT=8123" >> big_data_lab2/.env'
                 sh 'echo "CLICKHOUSE_USER=${CLICKHOUSE_CREDS_USR}" > big_data_lab2/.env'
                 sh 'echo "CLICKHOUSE_PASSWORD=${CLICKHOUSE_CREDS_PSW}" > big_data_lab2/.env'
