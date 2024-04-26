@@ -22,8 +22,10 @@ pipeline {
 
         stage('Prepare environment') {
             steps {
-                sh 'echo "CLICKHOUSE_HOST=clickhouse" > big_data_lab3/.env'
-                sh 'echo "CLICKHOUSE_PORT=8123" >> big_data_lab3/.env'
+                withCredentials([usernamePassword(credentialsId: 'vault-clickhouseclient', passwordVariable: 'CLICKHOUSE_PORT', usernameVariable: 'CLICKHOUSE_HOST')]) {
+                    sh 'echo "CLICKHOUSE_HOST=${CLICKHOUSE_HOST}" >> big_data_lab3/.env'
+                    sh 'echo "CLICKHOUSE_PORT=${CLICKHOUSE_PORT}" >> big_data_lab3/.env'
+                }
                 withCredentials([usernamePassword(credentialsId: 'vault-clickhouse', passwordVariable: 'CLICKHOUSE_PASSWORD', usernameVariable: 'CLICKHOUSE_USER')]) {
                     sh 'echo "CLICKHOUSE_USER=${CLICKHOUSE_USER}" >> big_data_lab3/.env'
                     sh 'echo "CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}" >> big_data_lab3/.env'
