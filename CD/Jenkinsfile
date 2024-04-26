@@ -11,13 +11,14 @@ pipeline {
 
         stage('Prepare environment') {
             steps {
-                sh 'echo "CLICKHOUSE_HOST=clickhouse" >> "/var/jenkins_home/workspace/Lab3CD/.env"'
-                sh 'echo "CLICKHOUSE_PORT=8123" >> "/var/jenkins_home/workspace/Lab3CD/.env"'
+                sh 'echo "CLICKHOUSE_HOST=clickhouse" > /var/jenkins_home/workspace/Lab3CD/.env'
+                sh 'echo "CLICKHOUSE_PORT=8123" >> /var/jenkins_home/workspace/Lab3CD/.env'
                 withCredentials([usernamePassword(credentialsId: 'vault-clickhouse', passwordVariable: 'CLICKHOUSE_PASSWORD', usernameVariable: 'CLICKHOUSE_USER')]) {
-                    sh 'echo "CLICKHOUSE_USER=${CLICKHOUSE_USER}" >> big_data_lab3/.env'
-                    sh 'echo "CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}" >> big_data_lab3/.env'
-                 }
+                    sh 'echo "CLICKHOUSE_USER=${CLICKHOUSE_USER}" >> /var/jenkins_home/workspace/Lab3CD/.env'
+                    sh 'echo "CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}" >> /var/jenkins_home/workspace/Lab3CD/.env'
+                }
             }
+        }
 
         stage('Run container') {
             steps {
