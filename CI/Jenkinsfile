@@ -2,84 +2,81 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDS=credentials('big_data_lab2')
-        CLICKHOUSE_CREDS=credentials('click_house')
         LC_ALL = "en_US.UTF-8"
-        LANG    = "en_US.UTF-8"
+        LANG = "en_US.UTF-8"
         LANGUAGE = "en_US.UTF-8"
     }
 
-options {
+    options {
         timestamps()
         skipDefaultCheckout(true)
-	}
+    }
+
     stages {
         stage('Clone github repository') {
             steps {
                 cleanWs()
                 sh 'git clone -b main https://github.com/PapaJool/big_data_lab3'
-				}
-			}
+            }
+        }
 
-		stage('Prepare environment') {
+        stage('Prepare environment') {
             steps {
                 sh 'echo "CLICKHOUSE_HOST=clickhouse" > big_data_lab3/.env'
                 sh 'echo "CLICKHOUSE_PORT=8123" >> big_data_lab3/.env'
-                sh 'echo "CLICKHOUSE_USER=${CLICKHOUSE_CREDS_USR}" > big_data_lab3/.env'
-                sh 'echo "CLICKHOUSE_PASSWORD=${CLICKHOUSE_CREDS_PSW}" > big_data_lab3/.env'
-                 }
+                withCredentials([usernamePassword(credentialsId: 'vault-clickhouse', passwordVariable: 'CLICKHOUSE_PASSWORD', usernameVariable: 'CLICKHOUSE_USER')]) {
+                    sh 'echo "CLICKHOUSE_USER=${CLICKHOUSE_USER}" >> big_data_lab3/.env'
+                    sh 'echo "CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}" >> big_data_lab3/.env'
+                }
             }
+        }
 
         stage('Checkout repo dir') {
             steps {
                 sh 'cd big_data_lab3 && dir'
-				}
-			}
+            }
+        }
 
-        stage('Login'){
-            steps{
-                //withCredentials([usernamePassword(credentialsId: 'mle-template', passwordVariable: 'DOCKER_REGISTRY_PWD', usernameVariable: 'DOCKER_REGISTRY_USER')]){
-                //sh 'echo $DOCKER_REGISTRY_PWD | docker login -u $DOCKER_REGISTRY_USER --password-stdin'}
-                //sh 'echo $DOCKERHUB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USR --password-stdin'
-                sh 'docker login -u $DOCKERHUB_CREDS_USR -p $DOCKERHUB_CREDS_PSW'
+        stage('Login') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'vault-docker', passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USER')]) {
+                    sh 'docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASSWORD'
                 }
             }
+        }
 
         stage('Create and run docker container') {
             steps {
                 script {
                     try {
                         sh 'cd big_data_lab3 && docker compose build'
-                        }
-
+                    }
                     finally {
-                    sh '''
-                        cd big_data_lab3
-                        docker compose up -d
+                        sh '''
+                            cd big_data_lab3
+                            docker compose up -d
                         '''
-                        }
-				    }
+                    }
                 }
             }
+        }
 
-        stage('Checkout coverage report'){
-            steps{
-                dir("big_data_lab3"){
+        stage('Checkout coverage report') {
+            steps {
+                dir("big_data_lab3") {
                     sh '''
-                    docker compose logs -t --tail 10
+                        docker compose logs -t --tail 10
                     '''
                 }
             }
         }
 
-        stage('Push'){
-            steps{
+        stage('Push') {
+            steps {
                 sh 'docker push papajool/big_data_lab3:latest'
             }
         }
-	    
-		
-	}
+    }
 
     post {
         always {
