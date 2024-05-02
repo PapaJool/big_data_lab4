@@ -12,7 +12,6 @@ import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Database class
-import kafka_service
 import db_init
 
 # Создаем экземпляр FastAPI
@@ -22,10 +21,6 @@ app = FastAPI()
 exp_path = os.path.join(os.getcwd(), "experiments")
 model_path = os.path.join(exp_path, "log_reg.sav")
 model = joblib.load(model_path)
-
-# Создаем экземпляр Kafka Producer
-kafka_bootstrap_servers = os.getenv('KAFKA_BOOTSTRAP_SERVERS', 'localhost:9092')
-producer = kafka_producer.KafkaProducer(kafka_bootstrap_servers)
 
 # Initialize the database
 db = db_init.Database()
