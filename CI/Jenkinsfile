@@ -16,26 +16,26 @@ pipeline {
         stage('Clone github repository') {
             steps {
                 cleanWs()
-                sh 'git clone -b main https://github.com/PapaJool/big_data_lab3'
+                sh 'git clone -b main https://github.com/PapaJool/big_data_lab4'
             }
         }
 
         stage('Prepare environment') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'vault-clickhouseclient', passwordVariable: 'CLICKHOUSE_PORT', usernameVariable: 'CLICKHOUSE_HOST')]) {
-                    sh 'echo "CLICKHOUSE_HOST=${CLICKHOUSE_HOST}" >> big_data_lab3/.env'
-                    sh 'echo "CLICKHOUSE_PORT=${CLICKHOUSE_PORT}" >> big_data_lab3/.env'
+                    sh 'echo "CLICKHOUSE_HOST=${CLICKHOUSE_HOST}" >> big_data_lab4/.env'
+                    sh 'echo "CLICKHOUSE_PORT=${CLICKHOUSE_PORT}" >> big_data_lab4/.env'
                 }
                 withCredentials([usernamePassword(credentialsId: 'vault-clickhouse', passwordVariable: 'CLICKHOUSE_PASSWORD', usernameVariable: 'CLICKHOUSE_USER')]) {
-                    sh 'echo "CLICKHOUSE_USER=${CLICKHOUSE_USER}" >> big_data_lab3/.env'
-                    sh 'echo "CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}" >> big_data_lab3/.env'
+                    sh 'echo "CLICKHOUSE_USER=${CLICKHOUSE_USER}" >> big_data_lab4/.env'
+                    sh 'echo "CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}" >> big_data_lab4/.env'
                 }
             }
         }
 
         stage('Checkout repo dir') {
             steps {
-                sh 'cd big_data_lab3 && dir'
+                sh 'cd big_data_lab4 && dir'
             }
         }
 
@@ -51,11 +51,11 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh 'cd big_data_lab3 && docker compose build'
+                        sh 'cd big_data_lab4 && docker compose build'
                     }
                     finally {
                         sh '''
-                            cd big_data_lab3
+                            cd big_data_lab4
                             docker compose up -d
                         '''
                     }
@@ -65,7 +65,7 @@ pipeline {
 
         stage('Checkout coverage report') {
             steps {
-                dir("big_data_lab3") {
+                dir("big_data_lab4") {
                     sh '''
                         docker compose logs -t --tail 10
                     '''
@@ -75,14 +75,14 @@ pipeline {
 
         stage('Push') {
             steps {
-                sh 'docker push papajool/big_data_lab3:latest'
+                sh 'docker push papajool/big_data_lab4:latest'
             }
         }
     }
 
     post {
         always {
-            sh 'docker compose -f big_data_lab3/docker-compose.yml down'
+            sh 'docker compose -f big_data_lab4/docker-compose.yml down'
             sh 'docker logout'
         }
     }

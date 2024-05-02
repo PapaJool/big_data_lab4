@@ -5,26 +5,26 @@ pipeline {
         stage('Pull image') {
             steps {
                 echo 'Updating docker image'
-                sh 'docker pull papajool/big_data_lab3:latest'
+                sh 'docker pull papajool/big_data_lab4:latest'
             }
         }
 
         stage('Prepare environment') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'vault-clickhouseclient', passwordVariable: 'CLICKHOUSE_PORT', usernameVariable: 'CLICKHOUSE_HOST')]) {
-                    sh 'echo "CLICKHOUSE_HOST=${CLICKHOUSE_HOST}" >> /var/jenkins_home/workspace/Lab3CD/.env'
-                    sh 'echo "CLICKHOUSE_PORT=${CLICKHOUSE_PORT}" >> /var/jenkins_home/workspace/Lab3CD/.env'
+                    sh 'echo "CLICKHOUSE_HOST=${CLICKHOUSE_HOST}" >> /var/jenkins_home/workspace/Lab4CD/.env'
+                    sh 'echo "CLICKHOUSE_PORT=${CLICKHOUSE_PORT}" >> /var/jenkins_home/workspace/Lab4CD/.env'
                 }
                 withCredentials([usernamePassword(credentialsId: 'vault-clickhouse', passwordVariable: 'CLICKHOUSE_PASSWORD', usernameVariable: 'CLICKHOUSE_USER')]) {
-                    sh 'echo "CLICKHOUSE_USER=${CLICKHOUSE_USER}" >> /var/jenkins_home/workspace/Lab3CD/.env'
-                    sh 'echo "CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}" >> /var/jenkins_home/workspace/Lab3CD/.env'
+                    sh 'echo "CLICKHOUSE_USER=${CLICKHOUSE_USER}" >> /var/jenkins_home/workspace/Lab4CD/.env'
+                    sh 'echo "CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}" >> /var/jenkins_home/workspace/Lab4CD/.env'
                 }
             }
         }
 
         stage('Run container') {
             steps {
-                sh 'curl https://raw.githubusercontent.com/PapaJool/big_data_lab3/main/docker-compose.yml -o docker-compose.yml'
+                sh 'curl https://raw.githubusercontent.com/PapaJool/big_data_lab4/main/docker-compose.yml -o docker-compose.yml'
                 sh 'dir'
                 sh 'docker compose up'
             }
