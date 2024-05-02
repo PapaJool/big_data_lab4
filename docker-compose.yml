@@ -17,8 +17,6 @@ services:
     hostname: kafka
     ports:
       - '9092:9092'
-    networks:
-      - app-tier
     environment:
       KAFKA_CFG_NODE_ID: 0
       KAFKA_CFG_PROCESS_ROLES: controller,broker
@@ -35,12 +33,10 @@ services:
       - "8090:8080"
     depends_on:
       - kafka
-    networks:
-      - app-tier
     environment:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS: kafka:29092
-  
+
   web:
     env_file:
       - .env
