@@ -14,7 +14,7 @@ class KafkaService:
         self.log = logger.get_logger(__name__)
 
         self.kafka_servers = ["0.0.0.0:9092"]
-        self.topic_name = 'image_predictions'
+        self.topic_name = 'age_predictions'
 
         self.topics = [NewTopic(name=self.topic_name, num_partitions=1, replication_factor=1)]
         self.admin_client = KafkaAdminClient(bootstrap_servers=self.kafka_servers)

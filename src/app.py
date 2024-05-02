@@ -6,6 +6,7 @@ import joblib
 import os
 
 
+
 import sys
 
 # Добавляем текущий каталог в PYTHONPATH
@@ -13,6 +14,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Database class
 import db_init
+from kafka_service import KafkaService
 
 # Создаем экземпляр FastAPI
 app = FastAPI()
@@ -27,14 +29,11 @@ db = db_init.Database()
 db.create_database("lab2_bd")
 db.create_table("predictions", {'X': 'Array(Float64)', 'y': 'Int32', 'predictions': 'Int32'})
 
+kafka_service = KafkaService()
 # Define the Pydantic input data model
 class InputData(BaseModel):
     X: list
     y: list
-
-def send_prediction_to_kafka(prediction_result):
-    message = {"prediction": prediction_result}
-    producer.send_message("prediction_topic", message)
 
 # Define the endpoint for predictions
 @app.post("/predict/")
@@ -49,8 +48,14 @@ async def predict(input_data: InputData):
 
         db.insert_data("predictions", X_db, int(y), int(predictions[0]))
 
-        # Отправляем результат предсказания в Kafka
-        send_prediction_to_kafka(predictions[0])
+        response = {
+            'X': input_data.X,
+            'y': input_data.y,
+            'predictions': str(predictions[0])
+        }
+
+        kafka_service.send(response)
+
 
         response = {"predictions": predictions.tolist()}
         return response
