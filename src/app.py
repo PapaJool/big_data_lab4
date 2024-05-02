@@ -5,12 +5,14 @@ from pydantic import BaseModel
 import joblib
 import os
 
+
 import sys
 
 # Добавляем текущий каталог в PYTHONPATH
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Database class
+import kafka_service
 import db_init
 
 # Создаем экземпляр FastAPI
@@ -21,6 +23,10 @@ exp_path = os.path.join(os.getcwd(), "experiments")
 model_path = os.path.join(exp_path, "log_reg.sav")
 model = joblib.load(model_path)
 
+# Создаем экземпляр Kafka Producer
+kafka_bootstrap_servers = os.getenv('KAFKA_BOOTSTRAP_SERVERS', 'localhost:9092')
+producer = kafka_producer.KafkaProducer(kafka_bootstrap_servers)
+
 # Initialize the database
 db = db_init.Database()
 db.create_database("lab2_bd")
@@ -30,6 +36,10 @@ db.create_table("predictions", {'X': 'Array(Float64)', 'y': 'Int32', 'prediction
 class InputData(BaseModel):
     X: list
     y: list
+
+def send_prediction_to_kafka(prediction_result):
+    message = {"prediction": prediction_result}
+    producer.send_message("prediction_topic", message)
 
 # Define the endpoint for predictions
 @app.post("/predict/")
@@ -43,6 +53,9 @@ async def predict(input_data: InputData):
         predictions = model.predict(X)
 
         db.insert_data("predictions", X_db, int(y), int(predictions[0]))
+
+        # Отправляем результат предсказания в Kafka
+        send_prediction_to_kafka(predictions[0])
 
         response = {"predictions": predictions.tolist()}
         return response

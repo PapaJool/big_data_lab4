@@ -7,10 +7,10 @@ import numpy as np
 class Database():
     def __init__(self):
         print("Connecting to db")
-        host = os.getenv('CLICKHOUSE_HOST')
-        port = int(os.getenv('CLICKHOUSE_PORT'))
-        username = os.getenv('CLICKHOUSE_USER')
-        password = os.getenv('CLICKHOUSE_PASSWORD')
+        host = os.getenv('CLICKHOUSE_HOST', 'localhost')
+        port = int(os.getenv('CLICKHOUSE_PORT', '8123'))
+        username = os.getenv('CLICKHOUSE_USER', 'default')
+        password = os.getenv('CLICKHOUSE_PASSWORD', '0000')
         self.client = clickhouse_connect.get_client(host=host, username=username, port=port, password=password)
 
     def create_database(self, database_name="lab2_bd"):
