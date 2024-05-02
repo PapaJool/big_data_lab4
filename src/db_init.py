@@ -3,10 +3,15 @@ import clickhouse_connect
 import pandas as pd
 from typing import Dict
 import numpy as np
+from logger import Logger
+
+
 
 class Database():
     def __init__(self):
-        print("Connecting to db")
+        logger = Logger(show=True)
+        self.log = logger.get_logger(__name__)
+        self.log.info("Connecting to db")
         host = os.getenv('CLICKHOUSE_HOST', 'localhost')
         port = int(os.getenv('CLICKHOUSE_PORT', '8123'))
         username = os.getenv('CLICKHOUSE_USER', 'default')
@@ -14,11 +19,11 @@ class Database():
         self.client = clickhouse_connect.get_client(host=host, username=username, port=port, password=password)
 
     def create_database(self, database_name="lab2_bd"):
-        print(f"Creating database {database_name}")
+        self.log.info(f"Creating database {database_name}")
         self.client.command(f"""CREATE DATABASE IF NOT EXISTS {database_name};""")
 
     def create_table(self, table_name: str, columns: Dict):
-        print(f"Creating table {table_name}")
+        self.log.info(f"Creating table {table_name}")
         cols = ""
         for k, v in columns.items():
             cols += f"`{k}` {v}, "
@@ -34,7 +39,7 @@ class Database():
     from datetime import datetime
 
     def insert_data(self, tablename: str, X, y, predictions):
-        print(f"Inserting data for {tablename}")
+        self.log.info(f"Inserting data for {tablename}")
         try:
             # Преобразуем X и predictions в списки
             X_values = X
@@ -51,21 +56,21 @@ class Database():
             print(f"Ошибка при вставке данных в таблицу {tablename}: {e}")
 
     def read_table(self, tablename: str) -> pd.DataFrame:
-        print(f"Reading table {tablename}")
+        self.log.info(f"Reading table {tablename}")
         return self.client.query_df(f'SELECT * FROM {tablename}')
 
     def drop_database(self, database_name: str):
-        print(f"Dropping database {database_name}")
+        self.log.info(f"Dropping database {database_name}")
         self.client.command(f'DROP DATABASE IF EXISTS {database_name}')
 
     def drop_table(self, table_name: str):
-        print(f"Dropping table {table_name}")
+        self.log.info(f"Dropping table {table_name}")
         self.client.command(f'DROP TABLE IF EXISTS {table_name}')
 
     def delete_data(self, table_name: str):
-        print(f"Deleting data in table {table_name}")
+        self.log.info(f"Deleting data in table {table_name}")
         self.client.command(f'DELETE FROM {table_name} WHERE 1=1')
 
     def table_exists(self, table_name: str):
-        print(f"Checking if table {table_name} exists")
+        self.log.info(f"Checking if table {table_name} exists")
         return self.client.query_df(f'EXISTS {table_name}')
