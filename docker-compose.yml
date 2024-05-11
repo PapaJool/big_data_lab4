@@ -29,7 +29,7 @@ services:
     container_name: kafka-ui
     image: provectuslabs/kafka-ui:latest
     ports:
-      - 8080:8080
+      - 8090:8090
     environment:
       DYNAMIC_CONFIG_ENABLED: true
 
