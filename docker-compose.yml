@@ -35,7 +35,7 @@ services:
     environment:
       KAFKA_CLUSTERS_0_NAME: local
       KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS: "kafka:9092"
-  
+
 
   web:
     env_file:

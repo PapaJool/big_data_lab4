@@ -26,6 +26,10 @@ pipeline {
                     sh 'echo "CLICKHOUSE_HOST=${CLICKHOUSE_HOST}" >> big_data_lab4/.env'
                     sh 'echo "CLICKHOUSE_PORT=${CLICKHOUSE_PORT}" >> big_data_lab4/.env'
                 }
+                withCredentials([usernamePassword(credentialsId: 'vault-kafka', passwordVariable: 'KAFKA_PORT', usernameVariable: 'KAFKA_HOST')]) {
+                    sh 'echo "KAFKA_HOST=${KAFKA_HOST}" >> big_data_lab4/.env'
+                    sh 'echo "KAFKA_PORT=${KAFKA_PORT}" >> big_data_lab4/.env'
+                }
                 withCredentials([usernamePassword(credentialsId: 'vault-clickhouse', passwordVariable: 'CLICKHOUSE_PASSWORD', usernameVariable: 'CLICKHOUSE_USER')]) {
                     sh 'echo "CLICKHOUSE_USER=${CLICKHOUSE_USER}" >> big_data_lab4/.env'
                     sh 'echo "CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}" >> big_data_lab4/.env'
