@@ -15,7 +15,7 @@ class KafkaService:
         self.log = logger.get_logger(__name__)
         host = os.getenv('KAFKA_HOST')
         port = os.getenv('KAFKA_PORT')
-        self.kafka_servers = [str(host) + ":" + str(port)]
+        self.kafka_servers = [f"{host}:{port}"]
         self.topic_name = 'age_predictions'
 
         self.topics = [NewTopic(name=self.topic_name, num_partitions=1, replication_factor=1)]
