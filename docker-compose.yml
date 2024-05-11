@@ -26,15 +26,12 @@ services:
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
 
   kafka-ui:
-    image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
     ports:
-      - "8090:8080"
-    depends_on:
-      - kafka
+      - 8080:8080
     environment:
-      KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS: kafka:29092
+      DYNAMIC_CONFIG_ENABLED: true
 
   web:
     env_file:
